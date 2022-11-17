@@ -36,6 +36,7 @@ Utility functions
 import logging
 import subprocess
 import sys
+import shutil
 
 
 def call_shell(command, echo=False, error_exit=True, **kwargs):
@@ -70,8 +71,9 @@ def purge(path, patterns, recursive=False):
     pattern_string = " -o ".join("-name '{}'".format(p) for p in patterns)
     pattern_string = "\( {} \)".format(pattern_string)
     depth = "-maxdepth 1" if not recursive else ""
-    cmd = 'find "{path}" {depth} {pattern_string} -delete'.format(
-        path=path, depth=depth, pattern_string=pattern_string
+    exc = shutil.which('find')
+    cmd = '{exc} "{path}" {depth} {pattern_string} -delete'.format(
+        exc=exc, path=path, depth=depth, pattern_string=pattern_string
     )
     return call_shell(cmd)
 
